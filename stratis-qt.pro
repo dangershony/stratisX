@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = stratis-qt
-VERSION = 1.2.2
+VERSION = 2.0.0.2
 INCLUDEPATH += src src/json src/qt
 QT += network
 DEFINES += ENABLE_WALLET
@@ -47,6 +47,8 @@ QMAKE_LFLAGS *= -fstack-protector-all --param ssp-buffer-size=1
 }
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
 win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat
+# on win32: enable GCC large address aware linker flag
+win32:QMAKE_LFLAGS *= -Wl,--large-address-aware -static
 win32:QMAKE_LFLAGS += -static-libgcc -static-libstdc++
 
 # use: qmake "USE_QRCODE=1"
@@ -227,35 +229,35 @@ HEADERS += src/qt/bitcoingui.h \
     src/clientversion.h \
     src/threadsafety.h \
     src/tinyformat.h \
-    src/x13hash/sph_blake.h \
-    src/x13hash/sph_skein.h \
-    src/x13hash/sph_keccak.h \
-    src/x13hash/sph_jh.h \
-    src/x13hash/sph_groestl.h \
-    src/x13hash/sph_bmw.h \
-    src/x13hash/sph_types.h \
-    src/x13hash/sph_luffa.h \
-    src/x13hash/sph_cubehash.h \
-    src/x13hash/sph_echo.h \
-    src/x13hash/sph_shavite.h \
-    src/x13hash/sph_simd.h \
-    src/x13hash/sph_hamsi.h \
-	src/x13hash/sph_fugue.h
+    src/obj/x13hash/sph_blake.h \
+    src/obj/x13hash/sph_skein.h \
+    src/obj/x13hash/sph_keccak.h \
+    src/obj/x13hash/sph_jh.h \
+    src/obj/x13hash/sph_groestl.h \
+    src/obj/x13hash/sph_bmw.h \
+    src/obj/x13hash/sph_types.h \
+    src/obj/x13hash/sph_luffa.h \
+    src/obj/x13hash/sph_cubehash.h \
+    src/obj/x13hash/sph_echo.h \
+    src/obj/x13hash/sph_shavite.h \
+    src/obj/x13hash/sph_simd.h \
+    src/obj/x13hash/sph_hamsi.h \
+    src/obj/x13hash/sph_fugue.h
 
 SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
-    src/x13hash/blake.c \
-    src/x13hash/bmw.c \
-    src/x13hash/groestl.c \
-    src/x13hash/jh.c \
-    src/x13hash/keccak.c \
-    src/x13hash/skein.c \
-    src/x13hash/luffa.c \
-    src/x13hash/cubehash.c \
-    src/x13hash/shavite.c \
-    src/x13hash/echo.c \
-    src/x13hash/simd.c \
-    src/x13hash/hamsi.c \
-	src/x13hash/fugue.c \
+    src/obj/x13hash/blake.c \
+    src/obj/x13hash/bmw.c \
+    src/obj/x13hash/groestl.c \
+    src/obj/x13hash/jh.c \
+    src/obj/x13hash/keccak.c \
+    src/obj/x13hash/skein.c \
+    src/obj/x13hash/luffa.c \
+    src/obj/x13hash/cubehash.c \
+    src/obj/x13hash/shavite.c \
+    src/obj/x13hash/echo.c \
+    src/obj/x13hash/simd.c \
+    src/obj/x13hash/hamsi.c \
+    src/obj/x13hash/fugue.c \
     src/qt/transactiontablemodel.cpp \
     src/qt/addresstablemodel.cpp \
     src/qt/optionsdialog.cpp \
@@ -385,7 +387,7 @@ isEmpty(BOOST_LIB_SUFFIX) {
 }
 
 isEmpty(BOOST_THREAD_LIB_SUFFIX) {
-    win32:BOOST_THREAD_LIB_SUFFIX = _win32$$BOOST_LIB_SUFFIX
+    win32:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
     else:BOOST_THREAD_LIB_SUFFIX = $$BOOST_LIB_SUFFIX
 }
 
@@ -423,11 +425,11 @@ windows:!contains(MINGW_THREAD_BUGFIX, 0) {
     QMAKE_LIBS_QT_ENTRY = -lmingwthrd $$QMAKE_LIBS_QT_ENTRY
 }
 
-macx:HEADERS += src/qt/macdockiconhandler.h
-macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm
+macx:HEADERS += src/qt/macdockiconhandler.h src/qt/macnotificationhandler.h
+macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm src/qt/macnotificationhandler.mm
 macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
-macx:ICON = src/qt/res/icons/bitcoin.icns
+macx:ICON = src/qt/res/icons/stratis.icns
 macx:TARGET = "Stratis-Qt"
 macx:QMAKE_CFLAGS_THREAD += -pthread
 macx:QMAKE_LFLAGS_THREAD += -pthread
